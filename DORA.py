@@ -10,6 +10,7 @@ import buildNetwork
 import basicRunDORA
 import pdb
 
+
 # globals
 vers_number = "0.2.3"  # DORA's version number.
 path_name = "pythonDORA/currentVers"  # current path DORA's looking in.
@@ -44,7 +45,7 @@ parameters = {
     # wdr= write the current state of the driver and recipient to output file,
     # wn=write current state of the network to output file).
     "run_order": ["cdr", "selectTokens", "r", "wp", "m", "p", "s", "f", "c"],
-    "run_cyles": 5000,
+    "run_cycles": 200,
     "write_on_iteration": 100,
     "firingOrderRule": "random",
     "strategic_mapping": False,
@@ -325,7 +326,7 @@ class RunMenu(object):
             if run_type.upper() == "D":
                 # run via the ctrlStruct.
                 ctrlStructure = ctrlStruct(self.network, self.parameters, self.write_file)
-                for cycle in range(self.parameters["run_cyles"]):
+                for cycle in range(self.parameters["run_cycles"]):
                     ctrlStructure.runCycle(cycle)
                     # if you are on a run cycle mod write_on_iteration, then write to file.
                     if (cycle + 1) % self.parameters["write_on_iteration"] == 0:
@@ -1095,6 +1096,8 @@ class ctrlStruct(object):
             elif run_item == "wn":
                 # write the current state of the network to the output file.
                 write_network(self.network.memory, self.write_file, cycle)
+            debug_print_activations(self.network, cycle)
+
 
 
 ########################
@@ -1297,6 +1300,31 @@ def swap_driver_recipient(memory):
     memory = basicRunDORA.findDriverRecipient(memory)
     # return memory.
     return memory
+
+def debug_print_activations(ctrl, cycle):
+    print(f"\n=== Cycle {cycle} ===")
+
+    def dump_nodes(label, nodes):
+        if nodes:
+            print(f"{label}:")
+            for n in nodes:
+                print(f"  {n.name}: {n.act:.3f}")
+
+    try:
+        # Top-level collections
+        # dump_nodes("Memory semantic nodes", ctrl.memory.semNodes)
+        dump_nodes("Memory PO nodes", ctrl.memory.POs)
+        dump_nodes("Memory RB nodes", ctrl.memory.RBs)
+
+        # Each analog in memory (driver/recipient are usually analogs too)
+        for idx, analog in enumerate(ctrl.memory.analogs):
+            # dump_nodes(f"Analog {idx} semantics", analog.semNodes)
+            dump_nodes(f"Analog {idx} POs", analog.POs)
+            dump_nodes(f"Analog {idx} RBs", analog.RBs)
+
+    except Exception as e:
+        print(f"Debug error while printing activations: {e}")
+
 
 
 ##############################################################################

@@ -1,0 +1,47 @@
+parameters = {
+    "asDORA": True,
+    "gamma": 0.3,
+    "delta": 0.1,
+    "eta": 0.9,
+    "HebbBias": 0.5,
+    "bias_retrieval_analogs": True,
+    "use_relative_act": True,
+    # run_order is an array indicating the order of operations for a learning phase
+    # (cdr=clear driver and recipient, cr=clear recipient,
+    # selectTokens=select token units from memory to place in the driver
+    #   (the selection of tokens is by analog (i.e., a specific analog is chosen,
+    #   and all tokens from that analog are placed in the driver)),
+    # selectP=select a P at random from memory to place in the driver, r=retrieval, m=map,
+    # p=predicate, f=form new relation, g=relational generalization, s=schema induction,
+    # 'b'=between group entropy ops, 'w'=within group entropy ops,
+    # 'wp'=within group entropy ops for preds only,
+    #   (NOTE: b, w, and wp operations are newer to the theory and therefore listed after the old
+    #   DORA operations; in reality according to the theory, they should occur after retrieval
+    #   and before mapping)
+    # 'co'=compression (NOTE: compression is an old part of the theory covered in Doumas, 2005,
+    #   but newly implemented for general DORA),
+    # c=clear results, cl=limited clear results (just inferences and newSet),
+    # wdr= write the current state of the driver and recipient to output file,
+    # wn=write current state of the network to output file).
+    "run_order": ["cdr", "selectTokens", "r", "wp", "m", "p", "s", "f", "c"],
+    "run_cycles": 100,
+    "write_on_iteration": 100,
+    "firingOrderRule": "random",
+    "strategic_mapping": False,
+    "ignore_object_semantics": False,
+    "ignore_memory_semantics": True,
+    "mag_decimal_precision": 0,
+    "exemplar_memory": False,
+    "recent_analog_bias": True,
+    "lateral_input_level": 1,
+    "screen_width": 1200,
+    "screen_height": 700,
+    "doGUI": True,
+    "testing": True,
+    "GUI_update_rate": 1,
+    "starting_iteration": 0,
+    "tokenize": False,
+    "ho_sem_act_flow": 0,
+    "remove_uncompressed": False,
+    "remove_compressed": False,
+}
