@@ -347,16 +347,22 @@ class RunMenu(object):
                     # if you're supposed to write the unit states and you're on a write cycle. 
                     if self.parameters["write_unit_states"] == True and (cycle + 1) % self.parameters["write_on_iteration"] == 0:
                         # load the old pickled file as a dict. 
-                        
+                        old_pickle_name = "batch_pickle" + str(self.parameters["starting_iteration"]) + ".pkl"
+                        try:
+                            with open(old_pickle_name, 'rb') as f:
+                                old_dict = pickle.load(f)
+                        except FileNotFoundError:
+                            old_dict = {}
                         # merge the old dict with the current act_dict. 
-                        xxx
+                        old_dict.update(ctrlStructure.network.act_dict)
                         # save the updated unit states act_dict to a file.
-                        xxx
                         write_pickle_name = "batch_pickle" + str(cycle + 1 + self.parameters["starting_iteration"]) + ".pkl"
+                        with open(write_pickle_name, 'wb') as f:
+                            pickle.dump(old_dict, f)
                         with open(write_pickle_name, 'wb') as f:
                             pickle.dump(ctrlStructure.network.act_dict, f)
                         # reset the act_dict. 
-                        ctrlStructure.network.act_dict = reset_act_dict(ctrlStructure.network.act_dict{'iteration'})
+                        ctrlStructure.network.act_dict = reset_act_dict(ctrlStructure.network.act_dict['iteration'])
                 # and update network based on ctrlStructure.memory.
                 self.network = ctrlStructure.network
             else:  # run in user controlled mode.
@@ -1331,7 +1337,7 @@ def swap_driver_recipient(memory):
 
 # function to reset the act_dict to empty. It returns an emptied act_dict structure with current iteration information.  
 def reset_act_dict(iteration):
-    act_dict {'iteration': iteration}
+    act_dict = {'iteration': iteration}
     return act_dict
 
 
